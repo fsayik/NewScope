@@ -8,11 +8,24 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    // MARK: - Variable
+    
+    
+    // MARK: - UI Components
+    
+    // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .systemBackground
+       
     }
+    
+    // MARK: - UI Setup
+    
+    // MARK: - Extension
+
+    
 
 
 }
