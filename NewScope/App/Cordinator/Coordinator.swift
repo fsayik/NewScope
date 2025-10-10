@@ -17,7 +17,7 @@ final class Coordinator: CoordinatorProtocol {
     
     // MARK: - Functions
     func start() {
-        let vc = ViewController()
+        let vc = TabBarViewBuilder.build(coordinator: self)
         navigationController?.setViewControllers([vc],
                                                  animated: true)
     }
