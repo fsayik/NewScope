@@ -17,9 +17,10 @@ final class HomeViewController: UIViewController {
     // MARK: - UI Components
     
     private let newsCollectionView: UICollectionView = {
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        let collectionView: UICollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
@@ -85,14 +86,12 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let spacing: CGFloat = 10
-        let totalSpacing = spacing * 3
-        
-        let width = (collectionView.bounds.width - totalSpacing) / 2
-        let height: CGFloat = 320
-        
-        return CGSize(width: width, height: height)
+        let bounds = UIScreen.main.bounds
+                let width = (bounds.width-30) / 2
+                return CGSize(width: width,
+                              height: width*1.5)
     }
+    
     
 }
 
