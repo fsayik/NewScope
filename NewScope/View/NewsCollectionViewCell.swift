@@ -87,7 +87,7 @@ final class NewsCollectionViewCell: UICollectionViewCell {
     func configure(with news: Article) {
         self.source.text = news.source?.name
         self.title.text = news.title
-        self.publishedAt.text = news.publishedAt
+        self.publishedAt.text = news.publishedAt!.timeAgoString()
         
         if let url = URL(string: news.urlToImage ?? "") {
             image.kf.setImage(with: url, placeholder: UIImage(systemName: "newspaper.fill"), options: [
