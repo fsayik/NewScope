@@ -19,7 +19,14 @@ final class HomeViewController: UIViewController {
     private let newsCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+
+        let numberOfColumns: CGFloat = 2
+        let totalHorizontalPadding = layout.sectionInset.left + layout.sectionInset.right + (layout.minimumInteritemSpacing * (numberOfColumns - 1))
+        let cellWidth = (UIScreen.main.bounds.width - totalHorizontalPadding) / numberOfColumns
+        layout.itemSize = CGSize(width: cellWidth, height: cellWidth * 1.3)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
@@ -51,7 +58,7 @@ final class HomeViewController: UIViewController {
     private func setCollectionViewLayout() {
         newsCollectionView.delegate = self
         newsCollectionView.dataSource = self
-        newsCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
+        newsCollectionView.register(NewsCollectionViewCell.self, forCellWithReuseIdentifier: NewsCollectionViewCell.identifier)
     }
     
     // MARK: - UI Setup
@@ -62,8 +69,8 @@ final class HomeViewController: UIViewController {
         NSLayoutConstraint.activate([
             newsCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             newsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            newsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10),
-            newsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10)
+            newsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            newsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
             
     }
@@ -75,24 +82,23 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = newsCollectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as? UICollectionViewCell else {
+        guard let cell = newsCollectionView.dequeueReusableCell(withReuseIdentifier: NewsCollectionViewCell.identifier, for: indexPath) as? NewsCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.backgroundColor = .systemBlue
+        cell.configure(with: viewModel.articles[indexPath.item])
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView,
+    /*func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let bounds = UIScreen.main.bounds
-                let width = (bounds.width-30) / 2
-                return CGSize(width: width,
-                              height: width*1.5)
-    }
-    
-    
+        let width = (bounds.width-30) / 2
+        return CGSize(width: width,
+                      height: width*1.5)
+    }*/
+        
 }
 
 // MARK: - HomeViewModelOutputProtokol
