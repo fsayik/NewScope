@@ -9,7 +9,7 @@ import Foundation
 
 protocol NetworkServiceProtocol {
     func getNews(completion: @escaping (Result<NewsData, Error>) -> Void)
-    func getSearch(q: String, completion: @escaping (Result<NewsData, Error>) -> Void)
+    func getSearch(q: String, language: String, completion: @escaping (Result<NewsData, Error>) -> Void)
 }
 
 final class NetworkService: NetworkServiceProtocol, NetworkManager {
@@ -25,8 +25,8 @@ final class NetworkService: NetworkServiceProtocol, NetworkManager {
         execute(endpoint, completion: completion)
     }
     
-    func getSearch(q: String, completion: @escaping (Result<NewsData, Error>) -> Void) {
-        let endpoint = EndPoint.everything(q: q)
+    func getSearch(q: String, language: String, completion: @escaping (Result<NewsData, Error>) -> Void) {
+        let endpoint = EndPoint.everything(q: q, language: language)
         execute(endpoint, completion: completion)
     }
 }

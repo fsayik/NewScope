@@ -21,7 +21,7 @@ enum HttpMethod : String {
 
 enum EndPoint {
     case topHeadlines
-    case everything(q: String)
+    case everything(q: String, language: String)
 }
 
 extension EndPoint: EndpointProtocol {
@@ -48,10 +48,10 @@ extension EndPoint: EndpointProtocol {
     
     var parameters: [URLQueryItem]? {
         switch self {
-        case .everything(let q):
+        case .everything(let q, let language):
             return [URLQueryItem(name: "q", value: q),
                     URLQueryItem(name: "apiKey", value: Constants.apiKey),
-                    URLQueryItem(name: "language", value: "tr")]
+                    URLQueryItem(name: "language", value: language)]
         case .topHeadlines:
             return [URLQueryItem(name: "apiKey", value: Constants.apiKey),
                     URLQueryItem(name: "country", value: "us")]

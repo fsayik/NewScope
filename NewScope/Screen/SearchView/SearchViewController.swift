@@ -32,6 +32,14 @@ final class SearchViewController: UIViewController {
         return collectionView
     }()
     
+    private let segmentedControl: UISegmentedControl = {
+        let sc = UISegmentedControl(items: ["EN", "TR"])
+        sc.selectedSegmentIndex = 0
+        sc.translatesAutoresizingMaskIntoConstraints = false
+        return sc
+        
+    }()
+    
     // MARK: - Init
     init(coordinator: Coordinator,
          viewModel: SearchViewModelProtokol) {
@@ -59,6 +67,8 @@ final class SearchViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .systemBackground
         view.addSubview(searchNewsCollectionView)
+        
+        segmentedControl.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
         
         NSLayoutConstraint.activate([
             searchNewsCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -102,7 +112,24 @@ final class SearchViewController: UIViewController {
         
         let logoItem = UIBarButtonItem(customView: logoImageView)
         navigationItem.leftBarButtonItem = logoItem
+        
+        // MARK: - Language Segment
+        let logoItemright = UIBarButtonItem(customView: segmentedControl)
+        navigationItem.rightBarButtonItem = logoItemright
     }
+    
+    // MARK: - Language Function
+    @objc private func segmentChanged(_ sender: UISegmentedControl) {
+            switch sender.selectedSegmentIndex {
+            case 0:
+                viewModel.switchLanguage(language: "en")
+            case 1:
+                viewModel.switchLanguage(language: "tr")
+            default:
+                break
+            }
+        }
+    
 }
 // MARK: - Extension
 

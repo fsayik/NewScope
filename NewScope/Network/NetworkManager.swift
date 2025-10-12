@@ -22,7 +22,7 @@ extension NetworkManager {
     ){
         
         let dataTask = URLSession.shared.dataTask(with: endpoint.request()) { data, response, error in
-            
+            print( endpoint.request() )
             if let error = error {
                 completion(.failure(error))
                 return
