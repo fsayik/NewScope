@@ -11,19 +11,33 @@ protocol SearchViewModelProtokol {
     var searchArticles: [Article] { get set }
     var delegate: SearchViewModelOutputProtokol? { get set }
     
-    func getSearchNewsData()
+    func getSearchNewsData(q: String)
+    func clearSearchArticles()
 }
 
 protocol SearchViewModelOutputProtokol: AnyObject {
-    func searchArticles()
+    func updateCollectionView()
 }
 
 final class SearchViewModel: SearchViewModelProtokol {
     var searchArticles: [Article] = []
     weak var delegate: SearchViewModelOutputProtokol?
     
-    func getSearchNewsData() {
-        
+    func getSearchNewsData(q: String) {
+        NetworkService.shared.getSearch(q: q) { [weak self] Result in
+            switch Result {
+            case .success(let articles):
+                self?.searchArticles = articles.articles!
+                self?.delegate?.updateCollectionView()
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func clearSearchArticles() {
+        searchArticles = []
+        delegate?.updateCollectionView()
     }
 }
 

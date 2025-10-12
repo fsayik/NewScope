@@ -49,10 +49,34 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.delegate = self
+        
+        setupNavigationBar()
+        //Latest News
         setupUI()
         setCollectionViewLayout()
         viewModel.getNewsData()
         
+    }
+    
+    private func setupNavigationBar() {
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.title = "Latest News"
+        
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.tintColor = .label
+        
+        // MARK: - Sol Logo
+        let logoImageView = UIImageView(image: UIImage(systemName: "newspaper.fill"))
+        logoImageView.contentMode = .scaleAspectFit
+        logoImageView.layer.cornerRadius = 6
+        logoImageView.clipsToBounds = true
+        logoImageView.translatesAutoresizingMaskIntoConstraints = false
+        logoImageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        logoImageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        let logoItem = UIBarButtonItem(customView: logoImageView)
+        navigationItem.leftBarButtonItem = logoItem
+       
     }
     
     private func setCollectionViewLayout() {
@@ -76,6 +100,8 @@ final class HomeViewController: UIViewController {
     }
         
 }
+
+// MARK: - UICollectionViewDataSource, UICollectionViewDelegate
 extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.articles.count
