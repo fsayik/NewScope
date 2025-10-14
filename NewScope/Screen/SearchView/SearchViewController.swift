@@ -123,8 +123,10 @@ final class SearchViewController: UIViewController {
             switch sender.selectedSegmentIndex {
             case 0:
                 viewModel.switchLanguage(language: "en")
+                viewModel.getSearchNewsData(q: searchController.searchBar.text ?? "")
             case 1:
                 viewModel.switchLanguage(language: "tr")
+                viewModel.getSearchNewsData(q: searchController.searchBar.text ?? "")
             default:
                 break
             }
@@ -165,5 +167,9 @@ extension SearchViewController: UICollectionViewDataSource, UICollectionViewDele
         }
         cell.configure(with: viewModel.searchArticles[indexPath.item])
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        coordinator.eventOccurred(with: NewsDetailViewBuilder.build(coordinator: coordinator, news: viewModel.searchArticles[indexPath.item]))
     }
 }

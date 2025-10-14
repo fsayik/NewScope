@@ -114,6 +114,10 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         cell.configure(with: viewModel.articles[indexPath.item])
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        coordinator.eventOccurred(with: NewsDetailViewBuilder.build(coordinator: coordinator, news: viewModel.articles[indexPath.item]))
+    }
 }
 
 // MARK: - HomeViewModelOutputProtokol
