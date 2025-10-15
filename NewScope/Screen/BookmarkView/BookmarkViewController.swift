@@ -14,6 +14,22 @@ final class BookmarkViewController: UIViewController {
     private var coordinator: Coordinator
     
     // MARK: - UI Components
+    private let bookmarkedNewsCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+
+        let numberOfColumns: CGFloat = 1
+        let totalHorizontalPadding = layout.sectionInset.left + layout.sectionInset.right + (layout.minimumInteritemSpacing * (numberOfColumns - 1))
+        let cellWidth = (UIScreen.main.bounds.width - totalHorizontalPadding) / numberOfColumns
+        layout.itemSize = CGSize(width: cellWidth, height: cellWidth * 0.5)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        return collectionView
+    }()
+    
     
     // MARK: - Init
     init(coordinator: Coordinator,
@@ -33,6 +49,9 @@ final class BookmarkViewController: UIViewController {
         super.viewDidLoad()
         viewModel.delegate = self
         setupNavigationBar()
+        setupCollectionView()
+        setCollectionViewLayout()
+        viewModel.getBookmarkArticles()
     }
     
     
@@ -55,15 +74,53 @@ final class BookmarkViewController: UIViewController {
         let logoItem = UIBarButtonItem(customView: logoImageView)
         navigationItem.leftBarButtonItem = logoItem
     }
+    private func setupCollectionView() {
+        view.backgroundColor = .systemBackground
+        view.addSubview(bookmarkedNewsCollectionView)
+        
+        NSLayoutConstraint.activate([
+            bookmarkedNewsCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            bookmarkedNewsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            bookmarkedNewsCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bookmarkedNewsCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+            
+    }
+    private func setCollectionViewLayout() {
+        bookmarkedNewsCollectionView.delegate = self
+        bookmarkedNewsCollectionView.dataSource = self
+        bookmarkedNewsCollectionView.register(NewsCollectionViewCell.self, forCellWithReuseIdentifier: NewsCollectionViewCell.identifier)
+    }
     
 }
 
 // MARK: - Extension
 
+// MARK: - UICollectionViewDataSource, UICollectionViewDelegate
+extension BookmarkViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return viewModel.bookmarkArticles.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = bookmarkedNewsCollectionView.dequeueReusableCell(withReuseIdentifier: NewsCollectionViewCell.identifier, for: indexPath) as? NewsCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        cell.configure(with: viewModel.bookmarkArticles[indexPath.item])
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        coordinator.eventOccurred(with: NewsDetailViewBuilder.build(coordinator: coordinator, news: viewModel.bookmarkArticles[indexPath.item]))
+    }
+}
 
+// MARK: - BookmarkViewModelOutputProtokol
 extension BookmarkViewController: BookmarkViewModelOutputProtokol {
-    func searchArticles() {
-        print("Update")
+    func updateCollectionView() {
+        DispatchQueue.main.async {
+            self.bookmarkedNewsCollectionView.reloadData()
+        }
     }
     
 }

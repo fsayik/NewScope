@@ -17,6 +17,7 @@ final class NewsDetailViewController: UIViewController {
     
     // MARK: - UI Components
     private var webView: WKWebView!
+    private lazy var bookmarkButton = UIBarButtonItem(image: UIImage(systemName: "bookmark"), style: .plain, target: self, action: #selector(addBookmark))
     
     
     // MARK: - Init
@@ -40,6 +41,7 @@ final class NewsDetailViewController: UIViewController {
         setupNavigationBar()
         setupWebView()
         loadWebsite()
+        updateBookmarkButton()
     }
     
     // MARK: - UI Setup
@@ -62,7 +64,7 @@ final class NewsDetailViewController: UIViewController {
             UIBarButtonItem(image: UIImage(systemName: "arrowshape.forward.circle"), style: .plain, target: self, action: #selector(goForward)),
             UIBarButtonItem(image: UIImage(systemName: "arrow.trianglehead.clockwise"), style: .plain, target: self, action: #selector(reloadPage)),
             UIBarButtonItem(image: UIImage(systemName: "arrowshape.backward.circle"), style: .plain, target: self, action: #selector(goBack)),
-            UIBarButtonItem(image: UIImage(systemName: "bookmark"), style: .plain, target: self, action: #selector(addBookmark))
+            bookmarkButton
         ]
     }
     
@@ -78,6 +80,7 @@ final class NewsDetailViewController: UIViewController {
     
     @objc private func addBookmark() {
         viewModel.addToBookmarks()
+        updateBookmarkButton()
     }
     
     @objc private func goBack() {
@@ -94,4 +97,15 @@ final class NewsDetailViewController: UIViewController {
     
     // MARK: - Extension
     
+}
+
+extension NewsDetailViewController: NewsDetailViewModelOutputProtokol {
+    func updateBookmarkButton() {
+        if viewModel.isBookmarked() {
+            bookmarkButton.image = UIImage(systemName: "bookmark.fill")
+        } else {
+            bookmarkButton.image = UIImage(systemName: "bookmark")
+        }
+        
+    }
 }

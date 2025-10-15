@@ -13,10 +13,11 @@ protocol NewsDetailViewModelProtokol {
     var newsDetail: Article? { get }
     
     func addToBookmarks()
+    func isBookmarked() -> Bool
 }
 
 protocol NewsDetailViewModelOutputProtokol: AnyObject {
-    
+    func updateBookmarkButton()
 }
 
 final class NewsDetailViewModel: NewsDetailViewModelProtokol {
@@ -29,6 +30,16 @@ final class NewsDetailViewModel: NewsDetailViewModelProtokol {
     }
     
     func addToBookmarks() {
-        print("Added Bokmarks")
+        if BookmarkManager.shared.isBookmarked(with: newsDetail!) {
+            BookmarkManager.shared.remove(with: newsDetail!)
+            delegate?.updateBookmarkButton()
+        } else {
+            BookmarkManager.shared.add(with: newsDetail!)
+            delegate?.updateBookmarkButton()
+        }
+    }
+    
+    func isBookmarked() -> Bool {
+        return BookmarkManager.shared.isBookmarked(with: newsDetail!)
     }
 }
